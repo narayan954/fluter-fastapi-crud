@@ -1,4 +1,4 @@
 fastapi
-sqlalchemy
 uvicorn
-pymysql
+requests 
+opencv-python
