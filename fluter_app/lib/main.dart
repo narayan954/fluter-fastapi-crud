@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Image Grayscaling App!',
       home: MyHomePage(),
     );
@@ -17,6 +19,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -68,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Image Processing App'),
+        title: const Text('Image Processing App'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -77,18 +81,18 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             TextField(
               controller: imageUrlController,
-              decoration: InputDecoration(labelText: 'Enter Image URL'),
+              decoration: const InputDecoration(labelText: 'Enter Image URL'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 processImage();
               },
-              child: Text('Process Image'),
+              child: const Text('Process Image'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             isLoading
-                ? CircularProgressIndicator()
+                ? const CircularProgressIndicator()
                 : processedImage.isNotEmpty
                     ? Image.memory(
                         base64Decode(processedImage),
