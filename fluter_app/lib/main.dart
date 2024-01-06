@@ -23,21 +23,32 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   TextEditingController imageUrlController = TextEditingController();
+  String processedImage = '';
 
   Future<void> processImage() async {
-    final response = await http.post(
-      Uri.parse('http://127.0.0.1:8000/process_image'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode({'image_url': imageUrlController.text}),
-    );
+    try {
+      final response = await http.post(
+        Uri.parse('http://127.0.0.1:8000/process_image'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'image_url': imageUrlController.text}),
+      );
 
-    if (response.statusCode == 200) {
-      print('Image processing successful');
-      // Handle the response as needed
-    } else {
-      print('Failed to process image');
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        final String base64Image = data['image'];
+
+        setState(() {
+          processedImage = base64Image;
+        });
+
+        print('Image processing successful');
+      } else {
+        print('Failed to process image');
+      }
+    } catch (e) {
+      print('Error: $e');
     }
   }
 
@@ -63,6 +74,14 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: Text('Process Image'),
             ),
+            SizedBox(height: 20),
+            processedImage.isNotEmpty
+                ? Image.memory(
+                    base64Decode(processedImage),
+                    width: 200,
+                    height: 200,
+                  )
+                : Container(),
           ],
         ),
       ),
