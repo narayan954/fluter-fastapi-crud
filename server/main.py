@@ -1,10 +1,12 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+import base64
+from io import BytesIO
+
 import cv2
 import numpy as np
 import requests
-from io import BytesIO
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -38,26 +40,17 @@ def process_image_opencv(image_url: str) -> str:
         # For example, convert the image to grayscale
         gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-        # display the grayscale image
-        cv2.imshow("Grayscale image", gray_image)
-        cv2.waitKey()
+        # Encode the processed image as base64
+        _, encoded_image = cv2.imencode(".png", gray_image)
+        base64_image = base64.b64encode(encoded_image.tobytes()).decode("utf-8")
 
-        # We can save the processed image or return some information
-        # Here, we'll just return a success message
-        return "Image processed successfully"
+        return base64_image
 
     except Exception as e:
-        print(e)
         raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
-
-
-@app.get("/")
-def home():
-    return {"message": "Hello World"}
 
 
 @app.post("/process_image")
 def process_image(image_request: ImageRequest):
-    print("image req", image_request.image_url)
     result = process_image_opencv(image_request.image_url)
-    return {"message": result}
+    return {"image": result}
