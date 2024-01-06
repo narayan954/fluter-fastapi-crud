@@ -34,3 +34,25 @@ class BookUpdate(BaseModel):
                 "synopsis": "Don Quixote is a Spanish novel by Miguel de Cervantes...",
             }
         }
+
+
+class User(BaseModel):
+    id: str = Field(default_factory=uuid.uuid4, alias="_id")
+    username: str = Field(...)
+    password: str = Field(...)
+    email: str = Field(...)
+    first_name: str = Field(...)
+    last_name: str = Field(...)
+
+    class Config:
+        populate_by_name = True
+        json_schema_extra = {
+            "example": {
+                "_id": "066de609-b04a-4b30-b46c-32537c7f1f6e",
+                "username": "testuser",
+                "password": "password",
+                "email": "example@gmail.com",
+                "first_name": "Test",
+                "last_name": "User",
+            }
+        }
